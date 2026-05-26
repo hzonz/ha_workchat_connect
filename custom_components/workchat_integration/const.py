@@ -6,7 +6,6 @@ from homeassistant.const import Platform
 DOMAIN: Final = "workchat_integration"
 
 # 支持的平台
-# 注意：在最新版本 HA 中，notify 被视为一个平台
 PLATFORMS: Final = [
     Platform.NOTIFY,
     Platform.SENSOR,
@@ -22,8 +21,23 @@ CONF_RECEIVE_USER: Final = "receive_user"
 CONF_EXTERNAL_URL: Final = "external_url"
 CONF_PROXY: Final = "proxy"
 
-# 企业微信 API 基础 URL
+# 企业微信 API 相关
 API_BASE: Final = "https://qyapi.weixin.qq.com/cgi-bin"
+# 补充 API 路径常量
+API_GET_TOKEN: Final = "gettoken"
+API_SEND_MESSAGE: Final = "message/send"
+API_UPLOAD_MEDIA: Final = "media/upload"
+
+# 消息类型常量
+MSG_TYPE_TEXT: Final = "text"
+MSG_TYPE_MARKDOWN: Final = "markdown"
+MSG_TYPE_TEXTCARD: Final = "textcard"
+MSG_TYPE_TEMPLATE_CARD: Final = "template_card"
+MSG_TYPE_NEWS: Final = "news"
+MSG_TYPE_IMAGE: Final = "image"
+MSG_TYPE_FILE: Final = "file"
+MSG_TYPE_VOICE: Final = "voice"
+MSG_TYPE_VIDEO: Final = "video"
 
 # 默认值
 DEFAULT_RECEIVE_USER: Final = "@all"

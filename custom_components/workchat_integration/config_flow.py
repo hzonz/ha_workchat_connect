@@ -1,4 +1,4 @@
-"""企微通集成的配置流程 - 支持可选代理校验."""
+"""企微通集成的配置流程 ."""
 from __future__ import annotations
 
 import logging

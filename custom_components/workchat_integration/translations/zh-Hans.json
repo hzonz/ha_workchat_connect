@@ -40,15 +40,25 @@
   },
   "entity": {
     "sensor": {
-      "text_msg": { "name": "文本消息" },
-      "image_msg": { "name": "图片消息" },
-      "location_msg": { "name": "位置消息" },
+      "text_message": { "name": "文本消息" },
+      "image_message": { "name": "图片消息" },
+      "location_message": { "name": "位置消息" },
       "menu_click": { "name": "菜单交互" },
       "callback_info": { "name": "回调状态" },
       "media_upload": { "name": "媒体上传" }
     },
     "notify": {
       "workchat_notifier": { "name": "通知助手" }
+    }
+  },
+  "services": {
+    "notify": {
+      "name": "发送消息",
+      "description": "通过企微通发送各种类型的消息。"
+    },
+    "upload_media": {
+      "name": "上传媒体文件",
+      "description": "上传本地文件并返回 media_id。"
     }
   }
 }
