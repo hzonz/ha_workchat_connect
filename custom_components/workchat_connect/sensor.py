@@ -242,7 +242,7 @@ class WorkChatMediaUploadSensor(WorkChatBaseEntity):
 
     @property
     def native_value(self) -> str | None:
-        return "Ready" if self._upload_data.get("media_id") else "Waiting to upload"
+        return "ready" if self._upload_data.get("media_id") else "waiting_to_upload"
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

@@ -122,8 +122,8 @@
       "media_upload": {
         "name": "Media Upload",
         "state": {
-          "Ready": "Ready",
-          "Waiting to upload": "Waiting to Upload"
+          "ready": "Ready",
+          "waiting_to_upload": "Waiting to Upload"
         },
         "state_attributes": {
           "media_id": { "name": "Media ID" },

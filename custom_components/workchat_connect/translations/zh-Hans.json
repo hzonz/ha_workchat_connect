@@ -122,8 +122,8 @@
       "media_upload": { 
         "name": "媒体上传",
         "state":{
-          "Ready": "已就绪",
-          "Waiting to upload": "等待上传"
+          "ready": "已就绪",
+          "waiting_to_upload": "等待上传"
         },
         "state_attributes": {
           "media_id": { "name": "媒体 ID" },
