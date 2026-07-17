@@ -198,8 +198,8 @@ class WorkChatCallbackInfoSensor(WorkChatBaseEntity):
 
     @property
     def native_value(self) -> str:
-        if not self.coordinator.data: return "Disconnected"
-        return "Connected" if self.coordinator.data.get("token_ready") else "Disconnected"
+        if not self.coordinator.data: return "disconnected"
+        return "connected" if self.coordinator.data.get("token_ready") else "disconnected"
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

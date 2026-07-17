@@ -107,8 +107,8 @@
       "callback_info": { 
         "name": "回调状态",
         "state": {
-          "Connected": "已连接",
-          "Disconnected": "断开连接" 
+          "connected": "已连接",
+          "disconnected": "断开连接" 
         },
         "state_attributes": {
           "webhook_url": { "name": "回调地址" },

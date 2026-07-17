@@ -107,8 +107,8 @@
       "callback_info": {
         "name": "Callback Status",
         "state": {
-          "Connected": "Connected",
-          "Disconnected": "Disconnected"
+          "connected": "Connected",
+          "disconnected": "Disconnected"
         },
         "state_attributes": {
           "webhook_url": { "name": "Callback URL" },
