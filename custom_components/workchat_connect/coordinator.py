@@ -13,6 +13,7 @@ from typing import Any
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.util import dt as dt_util
 
 from .api import WorkChatApi
@@ -52,6 +53,15 @@ class WorkChatCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # 由 __init__.py 注入的助手
         self.encryptor = None 
         self.external_url = ""
+
+        self._cleanup_remove_handler = async_track_time_interval(
+            self.hass, 
+            self._async_scheduled_cleanup, 
+            timedelta(days=1) # 每天运行一次
+        )
+        
+        # 核心：将注销函数告诉 ConfigEntry，卸载时会自动调用
+        entry.async_on_unload(self._cleanup_remove_handler)
 
     async def _async_update_data(self) -> dict[str, Any]:
         """定期从 API 获取并构建传感器数据字典."""
@@ -293,28 +303,31 @@ class WorkChatCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def _cleanup_old_files(self, path: str):
         """扫描并删除过期文件 (内部 IO 方法)."""
+        if not os.path.exists(path):
+            return
+
         now = time.time()
-        # 将天数转换为秒
         retention_seconds = DEFAULT_VOICE_RETENTION_DAYS * 86400
+        delete_count = 0
 
         try:
-            # 检查目录是否存在，防止清理不存在的目录
-            if not os.path.exists(path):
-                return
-
             for filename in os.listdir(path):
+                # 过滤：只清理音频文件，忽略隐藏文件
+                if filename.startswith(".") or not filename.lower().endswith((".mp3", ".amr", ".wav")):
+                    continue
+                    
                 file_path = os.path.join(path, filename)
-                
-                # 只处理文件（跳过子目录）
                 if os.path.isfile(file_path):
                     file_age = os.path.getmtime(file_path)
-                    
-                    # 如果文件创建/修改时间超过了保留期限 (默认 7 天)
                     if (now - file_age) > retention_seconds:
                         os.remove(file_path)
-                        LOGGER.debug("已自动清理过期企微语音文件: %s", filename)
+                        delete_count += 1
+                        LOGGER.info("自动清理：已删除过期语音文件 %s", filename)
+            
+            if delete_count > 0:
+                LOGGER.info("企微语音清理完成：共移除 %d 个文件", delete_count)
         except Exception as err:
-            LOGGER.error("执行自动清理任务时出错: %s", err)
+            LOGGER.error("自动清理任务执行失败: %s", err)
 
     async def async_remove_media_data(self):
         """卸载集成时，清理所有的语音文件及目录."""
@@ -332,6 +345,13 @@ class WorkChatCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # 在线程池中执行 IO 删除操作
         await self.hass.async_add_executor_job(_delete_dir)
+
+    async def _async_scheduled_cleanup(self, _now=None):
+        """定时触发的磁盘清理任务."""
+        LOGGER.info("正在执行每日企微语音文件自动清理巡检")
+        target_dir = self.hass.config.path("media", "workchat")
+        # 在线程池中执行磁盘扫描，防止卡顿
+        await self.hass.async_add_executor_job(self._cleanup_old_files, target_dir)
 
     @property
     def device_info(self) -> DeviceInfo:
